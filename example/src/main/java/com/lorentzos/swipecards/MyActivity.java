@@ -45,7 +45,6 @@ public class MyActivity extends Activity {
 
         arrayAdapter = new ArrayAdapter<>(this, R.layout.item, R.id.helloText, al );
 
-
         flingContainer.setAdapter(arrayAdapter);
         flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
             @Override
@@ -62,6 +61,11 @@ public class MyActivity extends Activity {
                 //You also have access to the original object.
                 //If you want to use it just cast it (String) dataObject
                 makeToast(MyActivity.this, "Left!");
+            }
+
+            @Override
+            public void onTopCardExit(Object dataObject) {
+
             }
 
             @Override

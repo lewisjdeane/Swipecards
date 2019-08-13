@@ -50,6 +50,7 @@ public class FlingCardListener implements View.OnTouchListener {
     private final Object obj = new Object();
     private boolean isAnimationRunning = false;
     private float MAX_COS = (float) Math.cos(Math.toRadians(45));
+    private float MAX_SIN = (float) Math.sin(Math.toRadians(45));
 
     enum Direction {
         Left,
@@ -203,7 +204,7 @@ public class FlingCardListener implements View.OnTouchListener {
             onSelected(Direction.Right, getExitPoint(parentWidth), 100);
             mFlingListener.onScroll(1.0f);
         } else if (movedBeyondTopBorder()){
-            onSelected(Direction.Right, getExitPoint(parentWidth), 100);
+            onSelected(Direction.Top, getExitXPoint(-objectH), 100);
             mFlingListener.onScroll(0f);
         }
         else {
@@ -235,7 +236,7 @@ public class FlingCardListener implements View.OnTouchListener {
     }
 
     private boolean movedBeyondTopBorder() {
-        return aPosY + halfHeight > topBorder();
+        return aPosY + halfHeight < topBorder();
     }
 
 
@@ -248,7 +249,7 @@ public class FlingCardListener implements View.OnTouchListener {
     }
 
     public float topBorder() {
-        return 3 * parentHeight / 4.f;
+        return parentHeight / 4.f;
     }
 
 
@@ -262,7 +263,8 @@ public class FlingCardListener implements View.OnTouchListener {
         } else if (direction == Direction.Right) {
             exitX = parentWidth + getRotationWidthOffset();
         } else {
-            exitX = -objectW;
+            exitX = exitY;
+            exitY = -objectH - getRotationHeightOffset();
         }
 
         this.frame.animate()
@@ -322,6 +324,20 @@ public class FlingCardListener implements View.OnTouchListener {
         return (float) regression.slope() * exitXPoint + (float) regression.intercept();
     }
 
+    private float getExitXPoint(int exitYPoint) {
+        float[] x = new float[2];
+        x[0] = objectX;
+        x[1] = aPosX;
+
+        float[] y = new float[2];
+        y[0] = objectY;
+        y[1] = aPosY;
+
+        LinearRegression regression = new LinearRegression(x, y);
+
+        return (exitYPoint - (float) regression.intercept()) / (float) regression.slope();
+    }
+
     private float getExitRotation(Direction direction) {
         float rotation = BASE_ROTATION_DEGREES * 2.f * (parentWidth - objectX) / parentWidth;
         if (touchPosition == TOUCH_BELOW) {
@@ -344,6 +360,9 @@ public class FlingCardListener implements View.OnTouchListener {
         return objectW / MAX_COS - objectW;
     }
 
+    private float getRotationHeightOffset() {
+        return objectH / MAX_SIN - objectH;
+    }
 
     public void setRotationDegrees(float degrees) {
         this.BASE_ROTATION_DEGREES = degrees;

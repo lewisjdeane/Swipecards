@@ -16,8 +16,6 @@ abstract class BaseFlingAdapterView extends AdapterView {
     private int heightMeasureSpec;
     private int widthMeasureSpec;
 
-
-
     public BaseFlingAdapterView(Context context) {
         super(context);
     }

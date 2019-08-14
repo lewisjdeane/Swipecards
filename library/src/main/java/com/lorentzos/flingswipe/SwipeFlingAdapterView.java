@@ -21,7 +21,6 @@ import android.widget.FrameLayout;
 
 public class SwipeFlingAdapterView extends BaseFlingAdapterView {
 
-
     private int MAX_VISIBLE = 4;
     private int MIN_ADAPTER_STACK = 6;
     private float ROTATION_DEGREES = 15.f;
@@ -35,7 +34,6 @@ public class SwipeFlingAdapterView extends BaseFlingAdapterView {
     private OnItemClickListener mOnItemClickListener;
     private FlingCardListener flingCardListener;
     private PointF mLastTouchPoint;
-
 
     public SwipeFlingAdapterView(Context context) {
         this(context, null);
@@ -54,7 +52,6 @@ public class SwipeFlingAdapterView extends BaseFlingAdapterView {
         ROTATION_DEGREES = a.getFloat(R.styleable.SwipeFlingAdapterView_rotation_degrees, ROTATION_DEGREES);
         a.recycle();
     }
-
 
     /**
      * A shortcut method to set both the listeners and the adapter.
@@ -79,7 +76,6 @@ public class SwipeFlingAdapterView extends BaseFlingAdapterView {
         return mActiveCard;
     }
 
-
     @Override
     public void requestLayout() {
         if (!mInLayout) {
@@ -98,9 +94,9 @@ public class SwipeFlingAdapterView extends BaseFlingAdapterView {
         mInLayout = true;
         final int adapterCount = mAdapter.getCount();
 
-        if(adapterCount == 0) {
+        if (adapterCount == 0) {
             removeAllViewsInLayout();
-        }else {
+        } else {
             View topCard = getChildAt(LAST_OBJECT_IN_STACK);
             if(mActiveCard!=null && topCard!=null && topCard==mActiveCard) {
                 if (this.flingCardListener.isTouching()) {
@@ -124,7 +120,6 @@ public class SwipeFlingAdapterView extends BaseFlingAdapterView {
         if(adapterCount <= MIN_ADAPTER_STACK) mFlingListener.onAdapterAboutToEmpty(adapterCount);
     }
 
-
     private void layoutChildren(int startingIndex, int adapterCount){
         while (startingIndex < Math.min(adapterCount, MAX_VISIBLE) ) {
             View newUnderChild = mAdapter.getView(startingIndex, null, this);
@@ -135,7 +130,6 @@ public class SwipeFlingAdapterView extends BaseFlingAdapterView {
             startingIndex++;
         }
     }
-
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void makeAndAddView(View child) {
@@ -156,7 +150,6 @@ public class SwipeFlingAdapterView extends BaseFlingAdapterView {
             cleanupLayoutState(child);
         }
 
-
         int w = child.getMeasuredWidth();
         int h = child.getMeasuredHeight();
 
@@ -164,7 +157,6 @@ public class SwipeFlingAdapterView extends BaseFlingAdapterView {
         if (gravity == -1) {
             gravity = Gravity.TOP | Gravity.START;
         }
-
 
         int layoutDirection = getLayoutDirection();
         final int absoluteGravity = Gravity.getAbsoluteGravity(gravity, layoutDirection);
@@ -202,9 +194,6 @@ public class SwipeFlingAdapterView extends BaseFlingAdapterView {
         child.layout(childLeft, childTop, childLeft + w, childTop + h);
     }
 
-
-
-
     /**
     *  Set the top view and add the fling listener
     */
@@ -236,6 +225,11 @@ public class SwipeFlingAdapterView extends BaseFlingAdapterView {
                             @Override
                             public void topExit(Object dataObject) {
                                 mFlingListener.onTopCardExit(dataObject);
+                            }
+
+                            @Override
+                            public void bottomExit(Object dataObject) {
+                                mFlingListener.onBottomCardExit(dataObject);
                             }
 
                             @Override
@@ -276,7 +270,6 @@ public class SwipeFlingAdapterView extends BaseFlingAdapterView {
         return mAdapter;
     }
 
-
     @Override
     public void setAdapter(Adapter adapter) {
         if (mAdapter != null && mDataSetObserver != null) {
@@ -300,14 +293,10 @@ public class SwipeFlingAdapterView extends BaseFlingAdapterView {
         this.mOnItemClickListener = onItemClickListener;
     }
 
-
-
-
     @Override
     public LayoutParams generateLayoutParams(AttributeSet attrs) {
         return new FrameLayout.LayoutParams(getContext(), attrs);
     }
-
 
     private class AdapterDataSetObserver extends DataSetObserver {
         @Override
@@ -322,7 +311,6 @@ public class SwipeFlingAdapterView extends BaseFlingAdapterView {
 
     }
 
-
     public interface OnItemClickListener {
         void onItemClicked(int itemPosition, Object dataObject);
     }
@@ -332,9 +320,8 @@ public class SwipeFlingAdapterView extends BaseFlingAdapterView {
         void onLeftCardExit(Object dataObject);
         void onRightCardExit(Object dataObject);
         void onTopCardExit(Object dataObject);
+        void onBottomCardExit(Object dataObject);
         void onAdapterAboutToEmpty(int itemsInAdapter);
         void onScroll(float scrollProgressPercent);
     }
-
-
 }

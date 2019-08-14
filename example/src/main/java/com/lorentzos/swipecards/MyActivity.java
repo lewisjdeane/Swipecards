@@ -25,7 +25,6 @@ public class MyActivity extends Activity {
 
     @InjectView(R.id.frame) SwipeFlingAdapterView flingContainer;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +64,11 @@ public class MyActivity extends Activity {
 
             @Override
             public void onTopCardExit(Object dataObject) {
+
+            }
+
+            @Override
+            public void onBottomCardExit(Object dataObject) {
 
             }
 

@@ -16,6 +16,8 @@ import android.view.animation.OvershootInterpolator;
  * and project Swipe cards.
  * Use with caution dinausaurs might appear!
  */
+
+
 public class FlingCardListener implements View.OnTouchListener {
 
     private static final String TAG = FlingCardListener.class.getSimpleName();
@@ -53,8 +55,7 @@ public class FlingCardListener implements View.OnTouchListener {
     enum Direction {
         Left,
         Top,
-        Right,
-        Bottom
+        Right
     }
 
     public FlingCardListener(View frame, Object itemAtPosition, FlingListener flingListener) {
@@ -97,7 +98,6 @@ public class FlingCardListener implements View.OnTouchListener {
                 } catch (IllegalArgumentException e) {
                     Log.w(TAG, "Exception in onTouch(view, event) : " + mActivePointerId, e);
                 }
-
                 if (success) {
                     // Remember where we started
                     aDownTouchX = x;
@@ -154,6 +154,7 @@ public class FlingCardListener implements View.OnTouchListener {
                 final float dx = xMove - aDownTouchX;
                 final float dy = yMove - aDownTouchY;
 
+
                 // Move the frame
                 aPosX += dx;
                 aPosY += dy;
@@ -202,11 +203,8 @@ public class FlingCardListener implements View.OnTouchListener {
             // Right Swipe
             onSelected(Direction.Right, getExitPoint(parentWidth), 100);
             mFlingListener.onScroll(1.0f);
-        } else if (movedBeyondTopBorder()) {
+        } else if (movedBeyondTopBorder()){
             onSelected(Direction.Top, getExitXPoint(-objectH), 100);
-            mFlingListener.onScroll(0f);
-        } else if (movedBeyondBottomBorder()) {
-            onSelected(Direction.Bottom, getExitXPoint(parentHeight), 100);
             mFlingListener.onScroll(0f);
         }
         else {
@@ -241,9 +239,6 @@ public class FlingCardListener implements View.OnTouchListener {
         return aPosY + halfHeight < topBorder();
     }
 
-    private boolean movedBeyondBottomBorder() {
-        return aPosY + halfHeight > bottomBorder();
-    }
 
     public float leftBorder() {
         return parentWidth / 4.f;
@@ -257,25 +252,17 @@ public class FlingCardListener implements View.OnTouchListener {
         return parentHeight / 4.f;
     }
 
-    public float bottomBorder() {
-        return 3 * parentHeight / 4.f;
-    }
 
-    public void onSelected(final Direction direction,
-                           float exitY, long duration) {
-
+    public void onSelected(final Direction direction, float exitY, long duration) {
         isAnimationRunning = true;
         float exitX;
         if (direction == Direction.Left) {
             exitX = -objectW - getRotationWidthOffset();
         } else if (direction == Direction.Right) {
             exitX = parentWidth + getRotationWidthOffset();
-        } else if (direction == Direction.Top) {
-            exitX = exitY;
-            exitY = -objectH - getRotationHeightOffset();
         } else {
             exitX = exitY;
-            exitY = parentHeight + getRotationHeightOffset();
+            exitY = -objectH - getRotationHeightOffset();
         }
 
         this.frame.animate()
@@ -292,18 +279,16 @@ public class FlingCardListener implements View.OnTouchListener {
                         } else if (direction == Direction.Right) {
                             mFlingListener.onCardExited();
                             mFlingListener.rightExit(dataObject);
-                        } else if (direction == Direction.Top) {
-                            mFlingListener.onCardExited();
-                            mFlingListener.topExit(dataObject);
                         } else {
                             mFlingListener.onCardExited();
-                            mFlingListener.bottomExit(dataObject);
+                            mFlingListener.topExit(dataObject);
                         }
                         isAnimationRunning = false;
                     }
                 })
                 .rotation(getExitRotation(direction));
     }
+
 
     /**
      * Starts a default left exit animation.
@@ -313,6 +298,12 @@ public class FlingCardListener implements View.OnTouchListener {
             onSelected(Direction.Left, objectY, 200);
     }
 
+    public void selectUp() {
+        if (!isAnimationRunning) {
+            onSelected(Direction.Top, objectX, 200);
+        }
+    }
+
     /**
      * Starts a default right exit animation.
      */
@@ -320,6 +311,7 @@ public class FlingCardListener implements View.OnTouchListener {
         if (!isAnimationRunning)
             onSelected(Direction.Right, objectY, 200);
     }
+
 
     private float getExitPoint(int exitXPoint) {
         float[] x = new float[2];
@@ -352,15 +344,12 @@ public class FlingCardListener implements View.OnTouchListener {
 
     private float getExitRotation(Direction direction) {
         float rotation = BASE_ROTATION_DEGREES * 2.f * (parentWidth - objectX) / parentWidth;
-
         if (touchPosition == TOUCH_BELOW) {
             rotation = -rotation;
         }
-
         if (direction == Direction.Left) {
             rotation = -rotation;
         }
-
         return rotation;
     }
 
@@ -400,12 +389,11 @@ public class FlingCardListener implements View.OnTouchListener {
 
         void topExit(Object dataObject);
 
-        void bottomExit(Object dataObject);
-
         void onClick(Object dataObject);
 
         void onScroll(float scrollProgressPercent);
     }
+
 }
 
 

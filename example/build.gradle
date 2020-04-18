@@ -20,7 +20,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':library')
-    compile 'com.jakewharton:butterknife:5.1.2'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':library')
+    annotationProcessor 'com.jakewharton:butterknife:5.1.2'
 }

@@ -3,20 +3,27 @@ apply plugin: 'maven'
 
 buildscript {
     repositories {
+        google()
         jcenter()
+        mavenCentral()
+        maven {
+            url 'https://maven.fabric.io/public'
+        }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.2.3'
-
-
+        classpath 'com.android.tools.build:gradle:3.6.2'
     }
 }
 
 allprojects {
-    version = VERSION_NAME
-    group = GROUP
-
     repositories {
+        maven {
+            url 'https://jitpack.io'
+        }
+        google()
         jcenter()
+        flatDir {
+            dirs 'libs'
+        }
     }
 }
